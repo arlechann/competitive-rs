@@ -1,3 +1,4 @@
+pub mod atcoder;
 pub mod input;
 pub mod output;
 
