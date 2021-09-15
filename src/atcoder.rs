@@ -3,7 +3,8 @@ use crate::output::{Output, OutputType};
 use std::io::{Read, Stdin, Stdout, Write};
 
 pub trait Solver: Sized {
-    fn solve<R: Read, O: Into<OutputType>>(&mut self, input: &mut Input<R>) -> O;
+    type Result;
+    fn solve<T: Read>(&mut self, input: &mut Input<T>) -> Self::Result;
 }
 
 pub struct Atcoder<R: Read, W: Write> {
@@ -16,9 +17,9 @@ impl<R: Read, W: Write> Atcoder<R, W> {
         Self { input, output }
     }
 
-    pub fn run<T: Solver, O: Into<OutputType>>(&mut self, solver: T) {
+    pub fn run<T: Solver<Result = impl Into<OutputType>>>(&mut self, solver: T) {
         let mut solver = solver;
-        let result = solver.solve::<R, O>(&mut self.input).into();
+        let result = solver.solve::<R>(&mut self.input).into();
         self.output.write(result);
     }
 }
